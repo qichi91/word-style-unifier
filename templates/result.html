@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>変換結果</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <h1>変換結果</h1>
+        <p class="status {{ status }}">{{ message }}</p>
+
+        <ul class="stats">
+          <li>変換成功: {{ converted_count }}</li>
+          <li>変換失敗: {{ failed_count }}</li>
+          <li>対象外スキップ: {{ skipped_count }}</li>
+        </ul>
+
+        {% if download_token %}
+        <a class="download" href="/download/{{ download_token }}">変換済みZIPをダウンロード</a>
+        {% endif %}
+
+        <p><a href="/">入力画面に戻る</a></p>
+      </section>
+    </main>
+  </body>
+</html>

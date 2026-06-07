@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wordスタイル統一</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <h1>Wordスタイル統一サービス</h1>
+        <p class="lead">半角英数字記号はフォントA、それ以外はフォントBに統一します。</p>
+
+        <form action="/convert" method="post" enctype="multipart/form-data" class="stack">
+          <div class="grid-2">
+            <label>
+              フォントA（英数字・半角記号）
+              <input name="font_a" list="font-list" value="{{ default_font_a }}" required />
+            </label>
+            <label>
+              フォントB（日本語・全角相当）
+              <input name="font_b" list="font-list" value="{{ default_font_b }}" required />
+            </label>
+          </div>
+
+          <datalist id="font-list">
+            {% for font in default_fonts %}
+            <option value="{{ font }}"></option>
+            {% endfor %}
+          </datalist>
+
+          <fieldset class="mode-switch">
+            <legend>入力方法</legend>
+            <label><input type="radio" name="input_mode" value="single" checked /> ファイル</label>
+            <label><input type="radio" name="input_mode" value="folder" /> フォルダ</label>
+            <label class="disabled"><input type="radio" disabled /> SVN（後日対応）</label>
+          </fieldset>
+
+          <div id="single-zone" class="dropzone active">
+            <label>
+              単一ファイル（.docx推奨）
+              <input type="file" name="single_file" accept=".docx,.DOCX" />
+            </label>
+          </div>
+
+          <div id="folder-zone" class="dropzone">
+            <label>
+              フォルダアップロード（再帰）
+              <input type="file" name="folder_files" multiple webkitdirectory directory />
+            </label>
+            <p class="hint">.docx以外は処理時に除外されます。</p>
+          </div>
+
+          <button type="submit">変換実行</button>
+        </form>
+      </section>
+    </main>
+
+    <script>
+      const modeInputs = document.querySelectorAll('input[name="input_mode"]');
+      const singleZone = document.getElementById('single-zone');
+      const folderZone = document.getElementById('folder-zone');
+
+      const updateMode = () => {
+        const selected = document.querySelector('input[name="input_mode"]:checked')?.value;
+        const singleInput = singleZone.querySelector('input[type="file"]');
+        const folderInput = folderZone.querySelector('input[type="file"]');
+
+        if (selected === 'folder') {
+          folderZone.classList.add('active');
+          singleZone.classList.remove('active');
+          folderInput.disabled = false;
+          singleInput.disabled = true;
+        } else {
+          singleZone.classList.add('active');
+          folderZone.classList.remove('active');
+          singleInput.disabled = false;
+          folderInput.disabled = true;
+        }
+      };
+
+      modeInputs.forEach((el) => el.addEventListener('change', updateMode));
+      updateMode();
+    </script>
+  </body>
+</html>
