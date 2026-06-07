@@ -100,6 +100,7 @@ async def convert(
         for index_num, (rel_path, src_path) in enumerate(saved):
             elapsed = time.time() - start
             if elapsed > PROCESS_TIMEOUT_SECONDS:
+                # 途中まで処理済みのものを残さず、残りはタイムアウト扱いにする。
                 failed_entries.append((str(rel_path), "timeout before conversion"))
                 for remain_rel, _ in saved[index_num + 1 :]:
                     failed_entries.append((str(remain_rel), "timeout before conversion"))
@@ -120,6 +121,7 @@ async def convert(
         zip_bytes = build_zip_bytes(output_root, failed_report)
 
     token = secrets.token_urlsafe(24)
+    # ZIPはメモリ上に保持し、token付きのダウンロードURLで返す。
     DOWNLOAD_STORE[token] = ResultBlob(
         filename="converted_results.zip",
         data=zip_bytes,
