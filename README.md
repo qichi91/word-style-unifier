@@ -15,6 +15,19 @@ Word(.docx)内の文字種に応じてフォントを統一し、結果をZIPで
 ### Docker
 - `docker compose up --build`
 
+### Dockerでの環境変数変更
+`docker-compose.yml` の `environment` で変更できます。
+
+- `VLLM_BASE_URL`: LLMサーバー接続先
+- `VLLM_MODEL`: OpenAI互換APIで利用するモデル名（`/v1/models` が取れない場合のフォールバック）
+
+例（.env を使う場合）:
+
+```env
+VLLM_BASE_URL=http://localhost:11434
+VLLM_MODEL=gemma4
+```
+
 ## 実装済み仕様（フェーズ1）
 - 単一ファイル/フォルダ(再帰)アップロード
 - .docxのみ変換対象（それ以外はスキップ）

@@ -1,5 +1,6 @@
 import copy
 import io
+import json
 import re
 import time
 from dataclasses import dataclass
@@ -446,7 +447,11 @@ def normalize_document(input_path: Path, output_path: Path, font_a: str, font_b:
     document.save(str(output_path))
 
 
-def build_zip_bytes(output_root: Path, failed_entries: list[tuple[str, str]]) -> bytes:
+def build_zip_bytes(
+    output_root: Path,
+    failed_entries: list[tuple[str, str]],
+    llm_report: list[dict] | None = None,
+) -> bytes:
     """変換済みファイル群と失敗一覧をZIPバイト列にまとめる。"""
 
     buffer = io.BytesIO()
@@ -462,6 +467,9 @@ def build_zip_bytes(output_root: Path, failed_entries: list[tuple[str, str]]) ->
             lines = ["path\treason"]
             lines.extend(f"{path}\t{reason}" for path, reason in failed_entries)
             zf.writestr("faield.txt", "\n".join(lines) + "\n")
+
+        if llm_report:
+            zf.writestr("llm_findings.json", json.dumps(llm_report, ensure_ascii=False, indent=2))
 
     buffer.seek(0)
     return buffer.getvalue()

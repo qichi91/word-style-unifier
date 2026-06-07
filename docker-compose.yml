@@ -2,6 +2,9 @@ services:
   web:
     build: .
     container_name: word-style-unifier
+    environment:
+      - VLLM_BASE_URL=${VLLM_BASE_URL:-http://localhost:11434}
+      - VLLM_MODEL=${VLLM_MODEL:-gemma4}
     ports:
       - "8000:8000"
     restart: unless-stopped

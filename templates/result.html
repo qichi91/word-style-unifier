@@ -16,7 +16,39 @@
           <li>変換成功: {{ converted_count }}</li>
           <li>変換失敗: {{ failed_count }}</li>
           <li>対象外スキップ: {{ skipped_count }}</li>
+          <li>{{ llm_status_message }}</li>
+          <li>LLM指摘件数: {{ llm_findings_count }}</li>
         </ul>
+
+        {% if llm_findings and llm_findings|length > 0 %}
+        <h2>LLM校正結果</h2>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">ファイル</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">ID</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">原文</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">検出</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">修正案</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">理由</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for finding in llm_findings %}
+              <tr>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.file or '-' }}</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.id or '-' }}</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.original or '-' }}</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.detected_error or '-' }}</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.suggested_fix or '-' }}</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">{{ finding.reason or '-' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
 
         {% if download_token %}
         <a class="download" href="/download/{{ download_token }}">変換済みZIPをダウンロード</a>

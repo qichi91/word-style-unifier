@@ -31,6 +31,20 @@
           </datalist>
 
           <fieldset class="mode-switch">
+            <legend>LLM校正機能</legend>
+            <label>
+              <input
+                type="checkbox"
+                name="llm_enable"
+                value="1"
+                {% if llm_available %}checked{% else %}disabled{% endif %}
+              />
+              LLM校正を有効化する
+            </label>
+            <p class="hint">{{ llm_status_message }}</p>
+          </fieldset>
+
+          <fieldset class="mode-switch">
             <legend>入力方法</legend>
             <label><input type="radio" name="input_mode" value="single" checked /> ファイル</label>
             <label><input type="radio" name="input_mode" value="folder" /> フォルダ</label>
